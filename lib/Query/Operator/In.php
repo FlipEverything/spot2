@@ -24,6 +24,10 @@ class In
             throw new Exception("Use of IN operator expects value to be array. Got " . gettype($value) . ".");
         }
 
-        return $column . ' IN (' . $builder->createPositionalParameter($value, Connection::PARAM_STR_ARRAY) . ')';
+        $valueIn = "";
+        foreach ($value as $val) {
+            $valueIn .= $builder->createPositionalParameter($val) . ",";
+        }
+        return $column . ' IN (' . trim($valueIn, ',') . ')';
     }
 }

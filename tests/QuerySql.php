@@ -235,9 +235,9 @@ class QuerySql extends \PHPUnit_Framework_TestCase
     public function testArrayDefaultIn()
     {
         $mapper = test_spot_mapper('SpotTest\Entity\Post');
-        $query = $mapper->select()->noQuote()->where(['status' => [2]]);
+        $query = $mapper->select()->noQuote()->where(['status' => [2, 2]]);
         $post = $query->first();
-        $this->assertEquals("SELECT * FROM test_posts WHERE test_posts.status IN (?) LIMIT 1", $query->toSql());
+        $this->assertEquals("SELECT * FROM test_posts WHERE test_posts.status IN (?,?) LIMIT 1", $query->toSql());
         $this->assertEquals(2, $post->status);
     }
 
@@ -345,7 +345,7 @@ class QuerySql extends \PHPUnit_Framework_TestCase
         $params = [3,4,5];
 
         $postsSub = $mapper->where(['status !=' => $params]);
-        $posts = $mapper->select()->whereFieldSql('id', 'IN(' . $postsSub->toSql() . ')', [$params]);
+        $posts = $mapper->select()->whereFieldSql('id', 'IN(' . $postsSub->toSql() . ')', $params);
 
         $this->assertContains('IN', $posts->toSql());
     }

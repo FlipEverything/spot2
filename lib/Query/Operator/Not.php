@@ -21,7 +21,11 @@ class Not
     public function __invoke(QueryBuilder $builder, $column, $value)
     {
         if (is_array($value) && !empty($value)) {
-            return $column . ' NOT IN (' . $builder->createPositionalParameter($value, Connection::PARAM_STR_ARRAY) . ')';
+            $valueIn = "";
+            foreach ($value as $val) {
+                $valueIn .= $builder->createPositionalParameter($val) . ",";
+            }
+            return $column . ' NOT IN (' . trim($valueIn, ',') . ')';
         }
 
         if ($value === null || (is_array($value) && empty($value))) {
